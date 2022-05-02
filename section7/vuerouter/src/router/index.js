@@ -1,16 +1,26 @@
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import BookList from '../views/BookList.vue'
+import HomeView from '@/views/HomeView.vue'
+import BookList from '@/views/BookList.vue'
 import BookDetail from '@/components/BookDetail.vue'
+import NotFound from '@/components/NotFound.vue'
+import MyUser from '@/views/MyUser.vue'
+import UserProfile from '@/components/UserProfile.vue'
+import UserPosts from '@/components/UserPosts.vue'
+import HomeSub from '@/components/HomeSub.vue'
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'Home',
+    components: {
+      default:HomeView,
+      sub: HomeSub
+    }
   },
   {
     path: '/about',
@@ -30,10 +40,25 @@ const routes = [
     name:'Book',
     component: BookDetail,
     props: route => ({ 
-      id: route.params.id,
+      id: Number(route.params.id),
       title: route.params.title,
       content: route.params.content })
+  },
+  {
+    path:'/user',
+    component: MyUser,
+    children:[
+      {path:'profile', component: UserProfile},
+      {path:'post', component: UserPosts}
+    ]
+  },
+  {
+    path:'*',
+    // redirect:'/',
+    name: 'NotFound',
+    component: NotFound
   }
+
 ]
 
 const router = new VueRouter({
@@ -41,5 +66,9 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
-
+// router.beforeEach((to, from, next) => {
+//   console.log(to);
+//   console.log(from);
+//   next()
+// })
 export default router
