@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.5.55/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.3.10/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id="app">
+    <h2>Books</h2>
+    <div v-for="(book, n) in books">
+      <p>
+        <span class="cat">{{ book }}</span>
+        <button @click="removeBook(n)">Remove</button>
+      </p>
+    </div>
+    <p>
+      <input v-model="newBook">
+      <button @click="addBook">Add Book</button>
+    </p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+
+  <script>
+    const STORAGE_KEY = 'book'
+    new Vue({
+      el: '#app',
+      data: {
+        books: [],
+        newBook: null
+      },
+      mounted() {
+        if (localStorage.getItem(STORAGE_KEY)) {
+          try {
+            this.books = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          } catch (e) {
+            localStorage.removeItem(STORAGE_KEY);
+          }
+        }
+      },
+      methods: {
+        addBook() {
+          // 実際に何かしたことを入力する
+          if (!this.newBook) {
+            return;
+          }
+
+          this.books.push(this.newBook);
+          this.newBook = '';
+          this.saveBooks();
+        },
+        removeBook(x) {
+          this.cats.splice(x, 1);
+          this.saveBooks();
+        },
+        saveBooks() {
+          const parsed = JSON.stringify(this.books);
+          localStorage.setItem(STORAGE_KEY, parsed);
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
